@@ -7,7 +7,7 @@
     "prestart": "node scripts/create-database.js", 
     "start": "nodemon -r dotenv/config index.js",
     "pretest": "node scripts/create-database.js test",
-    "test": "mocha tests/**/*.js --exit --recursive --timeout 60000 --file ./__tests__/test-setup.js",
+    "test": "mocha __tests__/**/*.js --exit --recursive --timeout 60000 --file ./__tests__/test-setup.js",
     "posttest": "node scripts/drop-database.js"
   },
   "keywords": [],
