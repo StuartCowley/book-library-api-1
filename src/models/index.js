@@ -2,6 +2,7 @@
 
 const Sequelize = require('sequelize');
 const ReaderModel = require('./reader');
+const BookModel = require('./book');
 
 const { DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT } = process.env;
 
@@ -15,11 +16,12 @@ const setUpDatabase = () => {
     });
 
     const Reader = ReaderModel(connection, Sequelize);
+    const Book = BookModel(connection, Sequelize);
 
     // this gives sequelize permission to alter our tables to fit the models that we are going to create. 
     connection.sync({ alter: true });
 
-    return { Reader };
+    return { Reader, Book };
 
 };
 

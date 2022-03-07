@@ -5,8 +5,8 @@ const readersRouter = express.Router();
 
 readersRouter.post('/', createReader);
 readersRouter.get('/', findAllReaders);
-readersRouter.get('/:readerId', findReaderByPk);
-readersRouter.patch('/:readerId', updateReader);
-readersRouter.delete('/:readerId', deleteReader);
+readersRouter.get('/:id', findReaderByPk);
+readersRouter.patch('/:id', updateReader);
+readersRouter.delete('/:id', deleteReader);
 
 module.exports = readersRouter;

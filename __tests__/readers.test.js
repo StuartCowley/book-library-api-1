@@ -19,7 +19,8 @@ describe('/readers', () => {
             it('creates a new reader in the database', async() => {
                 const response = await request(app).post('/readers').send({
                     name: 'Elizabeth Bennet',
-                    email: 'future_ms_darcy@gmail.com'
+                    email: 'future_ms_darcy@gmail.com',
+                    password: 'helloworld'
                 });
                 // using the { expect } function from the Chai library
                 const newReaderRecord = await Reader.findByPk(response.body.id, { raw: true });
@@ -28,6 +29,61 @@ describe('/readers', () => {
                 expect(response.body.name).to.equal('Elizabeth Bennet');
                 expect(newReaderRecord.name).to.equal('Elizabeth Bennet');
                 expect(newReaderRecord.email).to.equal('future_ms_darcy@gmail.com');
+                expect(newReaderRecord.password).to.equal('helloworld');
+            });
+
+            it('throws an error if any of the fields is null', async () => {
+                const response = await request(app).post('/readers').send({});
+                const newReaderRecord = await Reader.findByPk(response.body.id, {
+                  raw: true,
+                });
+        
+                expect(response.status).to.equal(400);
+                expect(response.body.errors.length).to.equal(3);
+                expect(newReaderRecord).to.equal(null);
+            });
+
+            it('throws an if email or password in wrong format', async () => {
+                
+                const response = await request(app).post('/readers').send({
+                    name: 'Micky Mouse',
+                    email: 'mickymousegmail.com',
+                    password: 'abc'
+                });
+
+                const newReaderRecord = await Reader.findByPk(response.body.id, { raw: true });
+        
+                expect(response.status).to.equal(400);
+                expect(response.body.errors.length).to.equal(2);
+                expect(newReaderRecord).to.equal(null);
+            });
+          
+            it('throws an error if name is an empty string', async () => {
+                const response = await request(app).post('/readers').send({
+                    name: '',
+                    email: 'mickymouse@gmail.com',
+                    password: 'abcdefghi'
+                });
+                
+                const newReaderRecord = await Reader.findByPk(response.body.id);
+        
+                expect(response.status).to.equal(400);
+                expect(response.body).to.haveOwnProperty('errors');
+                expect(newReaderRecord).to.equal(null);
+            });
+        
+            it('errors if email is empty string', async () => {
+                const response = await request(app).post('/readers').send({
+                    name: 'Micky Mouse',
+                    email: '',
+                    password: 'abcdefghi'
+                });
+                
+                const newReaderRecord = await Reader.findByPk(response.body.id);
+        
+                expect(response.status).to.equal(400);
+                expect(response.body).to.haveOwnProperty('errors');
+                expect(newReaderRecord).to.equal(null);
             });
         });
     });
@@ -39,11 +95,12 @@ describe('/readers', () => {
             readers = await Promise.all([
                 Reader.create({
                     name: 'Elizabeth Bennet',
-                    email: 'future_ms_darcy@gmail.com'
+                    email: 'future_ms_darcy@gmail.com',
+                    password: 'helloworld'
                 }),
-                Reader.create({ name: 'Arya Stark', email: 'vmorgul@me.com' }),
-                Reader.create({ name: 'Lyra Belacqua', email: 'darknorth123@msn.org' })
-            ])
+                Reader.create({ name: 'Arya Stark', email: 'vmorgul@me.com', password: 'goodbyeworld' }),
+                Reader.create({ name: 'Lyra Belacqua', email: 'darknorth123@msn.org', password: 'helloagain' })
+            ]);
         });
 
         describe('GET/readers', () => {
@@ -58,11 +115,12 @@ describe('/readers', () => {
 
                     expect(reader.name).to.equal(expected.name);
                     expect(reader.email).to.equal(expected.email);
+                    expect(reader.password).to.equal(undefined);
                 });
             });
         });
 
-        describe('GET/readers/:id', () => {
+        describe('GET/readers/:readerId', () => {
             it('gets readers record by id', async() => {
                 const reader = readers[0];
                 const response = await request(app).get(`/readers/${reader.id}`);
@@ -70,6 +128,7 @@ describe('/readers', () => {
                 expect(response.status).to.equal(200);
                 expect(response.body.name).to.equal(reader.name);
                 expect(response.body.email).to.equal(reader.email);
+                expect(response.body.password).to.equal(undefined);
             });
 
             it('returns a 404 if the reader does not exist', async() => {
@@ -80,12 +139,12 @@ describe('/readers', () => {
             });
         });
 
-        describe('PATCH/readers/:id', () => {
+        describe('PATCH/readers/:readerId', () => {
             it('updates readers email by id', async() => {
                 const reader = readers[0];
 
-                console.log(`the reader is ${reader}, and the reader id is ${reader.id}`);
-                console.log(`my readers are ${readers}`);
+                //console.log(`the reader is ${reader}, and the reader id is ${reader.id}`);
+                //console.log(`my readers are ${readers}`);
 
                 const response = await request(app)
                     .patch(`/readers/${reader.id}`)
@@ -108,7 +167,7 @@ describe('/readers', () => {
             });
         });
 
-        describe('DELETE/readers/:id', () => {
+        describe('DELETE/readers/:readerId', () => {
             it('deletes reader record by id', async() => {
                 const reader = readers[0];
                 const response = await request(app).delete(`/readers/${reader.id}`);
