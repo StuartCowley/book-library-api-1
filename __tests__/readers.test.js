@@ -104,7 +104,7 @@ describe('/readers', () => {
         });
 
         describe('GET/readers', () => {
-            it('gets all readers records', async() => {
+            it('gets all readers record', async() => {
                 const response = await request(app).get('/readers');
 
                 expect(response.status).to.equal(200);
@@ -172,7 +172,7 @@ describe('/readers', () => {
                 const reader = readers[0];
                 const response = await request(app).delete(`/readers/${reader.id}`);
                 const deletedReader = await Reader.findByPk(reader.id, { raw: true });
-                console.log(`this is the response for deleting reader ${response}`);
+                // console.log(`this is the response for deleting reader ${response}`);
                 expect(response.status).to.equal(204);
                 expect(deletedReader).to.equal(null);
             });
