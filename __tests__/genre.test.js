@@ -23,7 +23,7 @@ describe('/genres', () => {
                 expect(newGenre.genre).to.equal('Sci-Fi');
             });
 
-            it('throws an error if genre is null', () => {
+            it('throws an error if genre is null', async() => {
                 const response = await request(app).post('/genres').send({
                     genre: null
                 });
@@ -34,7 +34,7 @@ describe('/genres', () => {
                 expect(newGenre).to.equal(null);
             });
 
-            it('throws an error if genre is an empty string', () => {
+            it('throws an error if genre is an empty string', async() => {
                 const response = await request(app).post('/genres').send({
                     genre: ''
                 });
@@ -65,7 +65,7 @@ describe('/genres', () => {
         });
 
         describe('POST/genres', () => {
-            it('throws an error if the genre is already exists', () => {
+            it('throws an error if the genre is already exists', async() => {
                 const duplicatedGenre = genres[0].genre;
                 const response = await request(app).post('/genres').send(duplicatedGenre);
                 
@@ -98,7 +98,7 @@ describe('/genres', () => {
             });
 
             it('returns a 404 if the genre does not exist', async() => {
-                const response = await request(app).get('/genre/12345');
+                const response = await request(app).get('/genres/12345');
 
                 expect(response.status).to.equal(404);
                 expect(response.body.error).to.equal('The genre could not be found.');
@@ -118,7 +118,9 @@ describe('/genres', () => {
             });
 
             it('returns a 404 if the genre does not exist', async() => {
-                const response = await request(app).patch('/genre/12345');
+                const response = await request(app).patch('/genres/12345').send({
+                    genre: 'Horror'
+                });
 
                 expect(response.status).to.equal(404);
                 expect(response.body.error).to.equal('The genre could not be found.');

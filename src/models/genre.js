@@ -4,7 +4,7 @@ module.exports = (connection, DataTypes) => {
             allowNull: false,
             type: DataTypes.STRING,
             unique: true,
-            validation: {
+            validate: {
                 notNull: {
                     args: [true],
                     msg: 'We need a genre in so that we can create one'

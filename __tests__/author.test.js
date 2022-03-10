@@ -7,7 +7,7 @@ const request = require('supertest');
 describe('/authors', () => {
     before(async() => Author.sequelize.sync()); 
     beforeEach(async() => {
-        await Reader.destroy({ where: {} }); 
+        await Author.destroy({ where: {} }); 
     });
 
     describe('with no records in the database', () => {
@@ -19,11 +19,11 @@ describe('/authors', () => {
                 const newAuthor = await Author.findByPk(response.body.id, { raw: true });
 
                 expect(response.status).to.equal(201);
-                expect(response.author).to.equal('J.K. Rowling');
+                expect(response.body.author).to.equal('J.K. Rowling');
                 expect(newAuthor.author).to.equal('J.K. Rowling');
             });
 
-            it('throws an error if author is null', () => {
+            it('throws an error if author is null', async() => {
                 const response = await request(app).post('/authors').send({
                     author: null
                 });
@@ -34,7 +34,7 @@ describe('/authors', () => {
                 expect(newAuthor).to.equal(null);
             });
 
-            it('throws an error if author is an empty string', () => {
+            it('throws an error if author is an empty string', async() => {
                 const response = await request(app).post('/authors').send({
                     author: ''
                 });
@@ -65,7 +65,7 @@ describe('/authors', () => {
         });
 
         describe('POST/authors', () => {
-            it('throws an error if the author is already exists', () => {
+            it('throws an error if the author is already exists', async() => {
                 const duplicatedAuthor = authors[0].author;
                 const response = await request(app).post('/authors').send(duplicatedAuthor);
                 
@@ -109,12 +109,12 @@ describe('/authors', () => {
             it('udpates author by id', async() => {
                 const author = authors[0];
                 const response = await request(app).patch(`/authors/${author.id}`).send({
-                    author: 'Michy Mouse'
+                    author: 'Elsa'
                 });
                 const updatedAuthor = await Author.findByPk(author.id, { raw: true });
 
                 expect(response.status).to.equal(200);
-                expect(updatedAuthor.author).to.equal('Micky Mouse');
+                expect(updatedAuthor.author).to.equal('Elsa');
             });
 
             it('returns a 404 if the author does not exist', async() => {

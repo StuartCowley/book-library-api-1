@@ -1,10 +1,10 @@
-module.export = (connection, DataTypes) => {
+module.exports = (connection, DataTypes) => {
     const schema = {
         author: {
             allowNull: false,
             type: DataTypes.STRING,
             unique: true,
-            validation: {
+            validate: {
                 notNull: {
                     args: [true],
                     msg: 'We need an author in so that we can create one'
