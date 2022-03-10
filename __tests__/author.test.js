@@ -51,6 +51,9 @@ describe('/authors', () => {
         let authors;
 
         beforeEach(async() => {
+
+            await Author.destroy({ where: {} });
+            
             authors = await Promise.all([
                 Author.create({
                     author: 'J.K. Rowling'
