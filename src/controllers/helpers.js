@@ -19,6 +19,14 @@ const removePassword = object => {
     return object;
 };
 
+const getAssociation = (model) => {
+    if (model === 'book') return { includes: Genre };
+  
+    if (model === 'genre') return { includes: Book };
+  
+    return {};
+  };
+
 const createItem = async(res, model, obj) => {
     const Model = getModel(model);
 
@@ -35,7 +43,9 @@ const createItem = async(res, model, obj) => {
 const getAllItems = async(res, model) => {
     const Model = getModel(model);
 
-    const allItems = await Model.findAll();
+    const association = getAssociation(model);
+
+    const allItems = await Model.findAll(association);
 
     const itemsWithoutPassword = allItems.map(item => removePassword(item.dataValues));
     return res.json(itemsWithoutPassword);
@@ -43,8 +53,10 @@ const getAllItems = async(res, model) => {
 
 const getItemByPk = async(res, model, id) => {
     const Model = getModel(model);
+
+    const association = getAssociation(model);
     
-    const foundItem = await Model.findByPk(id); // req.params.id
+    const foundItem = await Model.findByPk(id, association); // req.params.id
     if(!foundItem){
         return res.status(404).json(get404Error(model));
     }else{

@@ -26,8 +26,6 @@ describe('/books', () => {
                 expect(response.status).to.equal(201);
                 expect(response.body.title).to.equal('Software Developer Life');
                 expect(newBookRecord.title).to.equal('Software Developer Life');
-                expect(newBookRecord.author).to.equal('David Xiang');
-                expect(newBookRecord.genre).to.equal('Computer');
                 expect(newBookRecord.ISBN).to.equal('978-1-7323459-0-4');
             });
 
