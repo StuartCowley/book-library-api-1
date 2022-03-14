@@ -1,11 +1,11 @@
-// utils/create-database.js
-// require the promise version of mysql2
+// create-database only needs to create the database
 const mysql = require('mysql2/promise');
 
 // require path to handle file paths
 const path = require('path');
 
 // extract any command line arguments from argv
+console.log(process.argv.slice(2)[0]);
 const args = process.argv.slice(2)[0];
 
 // use args to determine if .env or .env.test should be loaded
